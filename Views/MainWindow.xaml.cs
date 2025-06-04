@@ -1,27 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Game2048.Models;
+using Game2048.Services;
+using Game2048.ViewModels;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
-namespace Game2048.Views
+namespace Game2048.Views;
+
+public partial class MainWindow : Window
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    private readonly MainViewModel _viewModel;
+
+    public MainWindow()
     {
-        public MainWindow()
+        InitializeComponent();
+
+        var gameService = new GameService();
+        _viewModel = new MainViewModel(gameService);
+        DataContext = _viewModel;
+    }
+
+    private void Window_KeyDown(object sender, KeyEventArgs e)
+    {
+        Direction? direction = e.Key switch
         {
-            InitializeComponent();
+            Key.Up => Direction.Up,
+            Key.Down => Direction.Down,
+            Key.Left => Direction.Left,
+            Key.Right => Direction.Right,
+            _ => null
+        };
+
+        if (direction.HasValue)
+        {
+            _viewModel.MoveCommand.Execute(direction.Value);
+            e.Handled = true;
         }
     }
 }
