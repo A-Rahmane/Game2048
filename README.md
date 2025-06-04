@@ -21,6 +21,8 @@ This implementation follows the MVVM (Model-View-ViewModel) pattern with a servi
 - **Testability**: All components can be unit tested independently
 - **Extensibility**: Easy to add new features without modifying existing code
 - **Maintainability**: Clear structure and single responsibility for each class
+
+```
 ┌─────────────┐     ┌──────────────┐     ┌──────────────┐
 │    Views    │────▶│  ViewModels  │────▶│   Services   │
 └─────────────┘     └──────────────┘     └──────────────┘
@@ -29,8 +31,11 @@ This implementation follows the MVVM (Model-View-ViewModel) pattern with a servi
 ┌─────────┐         ┌─────────┐
 │Commands │         │ Models  │
 └─────────┘         └─────────┘
+```
 
 ## Project Structure
+
+```
 Game2048/
 ├── Models/
 │   ├── Direction.cs          # Enum for movement directions
@@ -50,17 +55,20 @@ Game2048/
 ├── Commands/
 │   └── RelayCommand.cs      # ICommand implementation
 └── App.xaml                 # Application resources
+```
 
 ## Key Components
 
 ### Models
 
 **Tile.cs**
+
 - Represents a single tile on the game board
 - Properties: Value, Row, Column, IsNew, IsMerged
 - Supports cloning for immutable game state
 
 **GameBoard.cs**
+
 - Maintains the 4x4 grid of tiles
 - Tracks score, game over state, and win condition
 - Provides cloning for state management
@@ -68,11 +76,13 @@ Game2048/
 ### Services
 
 **IGameService.cs**
+
 - Defines the contract for game operations
 - Methods: StartNewGame(), Move(), CanMove()
 - Events: GameBoardChanged
 
 **GameService.cs**
+
 - Implements core game logic
 - Handles tile movements and merging
 - Manages random tile generation
@@ -81,11 +91,13 @@ Game2048/
 ### ViewModels
 
 **MainViewModel.cs**
+
 - Orchestrates the game UI
 - Exposes commands for user actions
 - Updates UI based on game state changes
 
 **TileViewModel.cs**
+
 - Wraps a Tile model for UI binding
 - Provides color and styling based on tile value
 - Implements property change notifications
@@ -121,8 +133,12 @@ public class GameHistoryService : IGameHistoryService
     
     // Implement other methods...
 }
+```
+
 Update GameService to use history:
-csharppublic class GameService : IGameService
+
+```csharp
+public class GameService : IGameService
 {
     private readonly IGameHistoryService _historyService;
     
@@ -137,17 +153,26 @@ csharppublic class GameService : IGameService
         // ... existing move logic
     }
 }
-2. Adding Animation Enhancements
+```
+
+### 2. Adding Animation Enhancements
+
 Create animation services:
-csharp// Services/IAnimationService.cs
+
+```csharp
+// Services/IAnimationService.cs
 public interface IAnimationService
 {
     void AnimateTileMove(TileViewModel tile, double fromX, double fromY, double toX, double toY);
     void AnimateTileMerge(TileViewModel tile);
     void AnimateTileAppear(TileViewModel tile);
 }
-3. Adding High Score Tracking
-csharp// Services/IScoreService.cs
+```
+
+### 3. Adding High Score Tracking
+
+```csharp
+// Services/IScoreService.cs
 public interface IScoreService
 {
     int GetHighScore();
@@ -162,10 +187,16 @@ public class ScoreEntry
     public int Score { get; set; }
     public DateTime Date { get; set; }
 }
-Modifying Existing Code
-Optimizing Game Logic
+```
+
+## Modifying Existing Code
+
+### Optimizing Game Logic
+
 The current ProcessLine method in GameService can be optimized:
-csharp// Current implementation processes line multiple times
+
+```csharp
+// Current implementation processes line multiple times
 // Optimized version:
 private (int[] line, int points) ProcessLineOptimized(int[] line)
 {
@@ -190,9 +221,14 @@ private (int[] line, int points) ProcessLineOptimized(int[] line)
     
     return (result, points);
 }
-Customizing Tile Colors
+```
+
+### Customizing Tile Colors
+
 To change tile colors, modify the Background property in TileViewModel:
-csharp// Create a theme service
+
+```csharp
+// Create a theme service
 public interface IThemeService
 {
     Dictionary<int, Color> GetTileColors();
@@ -205,9 +241,14 @@ public TileViewModel(Tile tile, IThemeService themeService)
     _tile = tile;
     _themeService = themeService;
 }
-Adding Keyboard Shortcuts
+```
+
+### Adding Keyboard Shortcuts
+
 Extend the KeyDown handler in MainWindow.xaml.cs:
-csharpprivate void Window_KeyDown(object sender, KeyEventArgs e)
+
+```csharp
+private void Window_KeyDown(object sender, KeyEventArgs e)
 {
     if (e.Key == Key.N && Keyboard.Modifiers == ModifierKeys.Control)
     {
@@ -216,31 +257,36 @@ csharpprivate void Window_KeyDown(object sender, KeyEventArgs e)
     }
     // ... existing arrow key handling
 }
-Design Patterns Used
+```
 
-MVVM Pattern: Separates presentation logic from business logic
-Command Pattern: Encapsulates user actions as commands
-Observer Pattern: INotifyPropertyChanged for data binding
-Repository Pattern: GameService manages game state
-Dependency Injection: Services are injected into consumers
-Factory Pattern: (Can be added for tile creation)
+## Design Patterns Used
 
-Build and Run
+- **MVVM Pattern**: Separates presentation logic from business logic
+- **Command Pattern**: Encapsulates user actions as commands
+- **Observer Pattern**: INotifyPropertyChanged for data binding
+- **Repository Pattern**: GameService manages game state
+- **Dependency Injection**: Services are injected into consumers
+- **Factory Pattern**: (Can be added for tile creation)
 
-Clone the repository
-Open Game2048.sln in Visual Studio 2022 or later
-Restore NuGet packages
-Build the solution (Ctrl+Shift+B)
-Run the application (F5)
+## Build and Run
 
-Requirements:
+1. Clone the repository
+2. Open Game2048.sln in Visual Studio 2022 or later
+3. Restore NuGet packages
+4. Build the solution (Ctrl+Shift+B)
+5. Run the application (F5)
 
-.NET 8.0 or later
-Windows OS (for WPF)
+**Requirements:**
 
-Testing
-Unit Testing Structure
-csharp// Tests/Services/GameServiceTests.cs
+- .NET 8.0 or later
+- Windows OS (for WPF)
+
+## Testing
+
+### Unit Testing Structure
+
+```csharp
+// Tests/Services/GameServiceTests.cs
 [TestClass]
 public class GameServiceTests
 {
@@ -265,8 +311,12 @@ public class GameServiceTests
         Assert.IsTrue(result);
     }
 }
-Integration Testing
-csharp// Tests/ViewModels/MainViewModelTests.cs
+```
+
+### Integration Testing
+
+```csharp
+// Tests/ViewModels/MainViewModelTests.cs
 [TestClass]
 public class MainViewModelTests
 {
@@ -276,58 +326,60 @@ public class MainViewModelTests
         // Test ViewModel behavior
     }
 }
-Suggestions for Improvement
-1. Performance Enhancements
+```
 
-Tile Pooling: Implement object pooling for TileViewModel instances to reduce garbage collection
-Async Operations: Make tile animations and game state updates asynchronous
-Virtualization: For larger board sizes, implement UI virtualization
+## Suggestions for Improvement
 
-2. Feature Additions
+### 1. Performance Enhancements
 
-Multiple Board Sizes: Support 5x5, 6x6 boards with configurable goals
-Power-ups: Add special tiles that clear rows/columns or multiply scores
-Multiplayer Mode: Implement competitive or cooperative gameplay
-AI Solver: Add an AI that can suggest optimal moves
-Statistics Tracking: Track games played, win rate, average score, etc.
+- **Tile Pooling**: Implement object pooling for TileViewModel instances to reduce garbage collection
+- **Async Operations**: Make tile animations and game state updates asynchronous
+- **Virtualization**: For larger board sizes, implement UI virtualization
 
-3. Technical Improvements
+### 2. Feature Additions
 
-Dependency Injection Container: Use a DI container (e.g., Microsoft.Extensions.DependencyInjection)
-Logging: Implement structured logging with Serilog or NLog
-Settings Management: Add user preferences (theme, sound, animations)
-Localization: Support multiple languages using resource files
-Save/Load Game State: Persist game state between sessions
+- **Multiple Board Sizes**: Support 5x5, 6x6 boards with configurable goals
+- **Power-ups**: Add special tiles that clear rows/columns or multiply scores
+- **Multiplayer Mode**: Implement competitive or cooperative gameplay
+- **AI Solver**: Add an AI that can suggest optimal moves
+- **Statistics Tracking**: Track games played, win rate, average score, etc.
 
-4. UI/UX Enhancements
+### 3. Technical Improvements
 
-Smooth Animations: Implement fluid tile movements and merging animations
-Sound Effects: Add audio feedback for moves, merges, and game events
-Themes: Support multiple visual themes (dark mode, high contrast, custom colors)
-Touch Support: Add swipe gestures for touch-enabled devices
-Responsive Design: Make the UI scalable for different window sizes
+- **Dependency Injection Container**: Use a DI container (e.g., Microsoft.Extensions.DependencyInjection)
+- **Logging**: Implement structured logging with Serilog or NLog
+- **Settings Management**: Add user preferences (theme, sound, animations)
+- **Localization**: Support multiple languages using resource files
+- **Save/Load Game State**: Persist game state between sessions
 
-5. Code Quality
+### 4. UI/UX Enhancements
 
-Code Analysis: Enable and configure StyleCop or Roslyn analyzers
-Documentation: Add XML documentation to all public APIs
-Performance Profiling: Use BenchmarkDotNet for performance testing
-Code Coverage: Aim for >80% test coverage
-CI/CD Pipeline: Set up automated builds and tests
+- **Smooth Animations**: Implement fluid tile movements and merging animations
+- **Sound Effects**: Add audio feedback for moves, merges, and game events
+- **Themes**: Support multiple visual themes (dark mode, high contrast, custom colors)
+- **Touch Support**: Add swipe gestures for touch-enabled devices
+- **Responsive Design**: Make the UI scalable for different window sizes
 
-6. Architecture Enhancements
+### 5. Code Quality
 
-Plugin System: Allow third-party extensions
-Event Sourcing: Store all game moves for replay functionality
-State Machine: Implement game states (Menu, Playing, Paused, GameOver)
-Mediator Pattern: Decouple components further using MediatR
+- **Code Analysis**: Enable and configure StyleCop or Roslyn analyzers
+- **Documentation**: Add XML documentation to all public APIs
+- **Performance Profiling**: Use BenchmarkDotNet for performance testing
+- **Code Coverage**: Aim for >80% test coverage
+- **CI/CD Pipeline**: Set up automated builds and tests
 
-7. Distribution
+### 6. Architecture Enhancements
 
-Installer: Create MSI or ClickOnce installer
-Portable Version: Create a self-contained executable
-Microsoft Store: Package as MSIX for Store distribution
-Cross-Platform: Consider migrating to .NET MAUI or Avalonia
+- **Plugin System**: Allow third-party extensions
+- **Event Sourcing**: Store all game moves for replay functionality
+- **State Machine**: Implement game states (Menu, Playing, Paused, GameOver)
+- **Mediator Pattern**: Decouple components further using MediatR
+
+### 7. Distribution
+
+- **Installer**: Create MSI or ClickOnce installer
+- **Portable Version**: Create a self-contained executable
+- **Microsoft Store**: Package as MSIX for Store distribution
+- **Cross-Platform**: Consider migrating to .NET MAUI or Avalonia
 
 These improvements would transform the application from a simple game implementation into a professional, feature-rich gaming experience while maintaining code quality and extensibility.
-
