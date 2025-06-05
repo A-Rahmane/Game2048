@@ -6,12 +6,8 @@ A clean, well-architected implementation of the popular 2048 game using WPF and 
 - [Architecture Overview](#architecture-overview)
 - [Project Structure](#project-structure)
 - [Key Components](#key-components)
-- [Adding New Features](#adding-new-features)
-- [Modifying Existing Code](#modifying-existing-code)
 - [Design Patterns Used](#design-patterns-used)
 - [Build and Run](#build-and-run)
-- [Testing](#testing)
-- [Suggestions for Improvement](#suggestions-for-improvement)
 
 ## Architecture Overview
 
